@@ -2,9 +2,10 @@
 
 A production-ready, high-performance streaming anomaly detection system using **pure algorithmic approaches** (no ML). Built for real-time event processing with Kafka, Redis, and FastAPI.
 
-[![CI](https://github.com/yourusername/real-time-anomaly-detection-system/workflows/CI/badge.svg)](https://github.com/yourusername/real-time-anomaly-detection-system/actions)
+🔗 **[Live Demo](https://real-time-anomaly-detection-dashboard-production-71e3.up.railway.app)** | 📂 **[Source Code](https://github.com/suvadityaroy/Real-Time-Anomaly-Detection-Dashboard)**
+
 [![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Live Demo](https://img.shields.io/badge/demo-live-brightgreen)](https://real-time-anomaly-detection-dashboard-production-71e3.up.railway.app)
 
 ## ✨ Features
 
