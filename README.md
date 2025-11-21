@@ -1,8 +1,8 @@
 # 🔍 Real-Time Anomaly Detection System
 
-A production-ready, high-performance streaming anomaly detection system using **pure algorithmic approaches** (no ML). Built for real-time event processing with Kafka, Redis, and FastAPI.
+🚀 **Live Demo:** https://real-time-anomaly-detection-dashboard-production-71e3.up.railway.app
 
-🔗 **[Live Demo](https://real-time-anomaly-detection-dashboard-production-71e3.up.railway.app)** | 📂 **[Source Code](https://github.com/suvadityaroy/Real-Time-Anomaly-Detection-Dashboard)**
+Real-Time Anomaly Detection System is a FastAPI + Redis + Kafka reference implementation for streaming anomaly detection using statistical Z-score algorithms (no ML). It emphasizes real-time processing, WebSocket dashboards, multi-format file uploads (CSV/JSON/TXT), and production-focused ergonomics (Docker, comprehensive tests, graceful shutdown) so teams can bootstrap resilient anomaly detection pipelines quickly.
 
 [![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
 [![Live Demo](https://img.shields.io/badge/demo-live-brightgreen)](https://real-time-anomaly-detection-dashboard-production-71e3.up.railway.app)
