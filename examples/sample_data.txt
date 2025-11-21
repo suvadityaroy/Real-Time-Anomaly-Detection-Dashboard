@@ -1,0 +1,13 @@
+# TXT format: metric,value,timestamp (one per line)
+# Lines starting with # are comments
+network_latency,12.5,2025-01-21T12:00:00Z
+network_latency,13.2,2025-01-21T12:01:00Z
+network_latency,11.8,2025-01-21T12:02:00Z
+network_latency,14.1,2025-01-21T12:03:00Z
+network_latency,200.5,2025-01-21T12:04:00Z
+network_latency,12.9,2025-01-21T12:05:00Z
+disk_io,45.3,2025-01-21T12:00:00Z
+disk_io,47.2,2025-01-21T12:01:00Z
+disk_io,46.8,2025-01-21T12:02:00Z
+disk_io,300.9,2025-01-21T12:03:00Z
+disk_io,45.7,2025-01-21T12:04:00Z

@@ -1,0 +1,155 @@
+version: '3.8'
+
+services:
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.4.0
+    hostname: zookeeper
+    container_name: anomaly-zookeeper
+    ports:
+      - "2181:2181"
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    networks:
+      - anomaly-net
+
+  kafka:
+    image: confluentinc/cp-kafka:7.4.0
+    hostname: kafka
+    container_name: anomaly-kafka
+    depends_on:
+      - zookeeper
+    ports:
+      - "9092:9092"
+      - "9101:9101"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: 'zookeeper:2181'
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'true'
+      KAFKA_JMX_PORT: 9101
+      KAFKA_JMX_HOSTNAME: localhost
+    networks:
+      - anomaly-net
+    healthcheck:
+      test: ["CMD", "kafka-broker-api-versions", "--bootstrap-server", "localhost:9092"]
+      interval: 10s
+      timeout: 10s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    hostname: redis
+    container_name: anomaly-redis
+    ports:
+      - "6379:6379"
+    command: redis-server --appendonly yes
+    volumes:
+      - redis-data:/data
+    networks:
+      - anomaly-net
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  # API Service - FastAPI with WebSocket support
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: anomaly-api
+    depends_on:
+      redis:
+        condition: service_healthy
+    ports:
+      - "8000:8000"
+    environment:
+      REDIS_URL: redis://redis:6379/0
+      KAFKA_BROKER: kafka:9092
+      KAFKA_TOPIC: events
+      LOG_LEVEL: INFO
+      ENVIRONMENT: production
+      EMAIL_ENABLED: "false"
+      # SMTP Configuration (uncomment and configure for email alerts)
+      # SMTP_HOST: smtp.gmail.com
+      # SMTP_PORT: 587
+      # SMTP_USER: your-email@gmail.com
+      # SMTP_PASSWORD: your-app-password
+      # EMAIL_FROM: your-email@gmail.com
+      # EMAIL_TO: alerts@example.com
+    networks:
+      - anomaly-net
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    volumes:
+      - ./src/anomaly/dashboard_static:/app/src/anomaly/dashboard_static:ro
+
+  # Processor Service - Anomaly Detection Engine
+  processor:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: anomaly-processor
+    depends_on:
+      redis:
+        condition: service_healthy
+    environment:
+      REDIS_URL: redis://redis:6379/0
+      KAFKA_BROKER: kafka:9092
+      KAFKA_TOPIC: events
+      WINDOW_SECONDS: 300.0
+      ANOMALY_THRESHOLD: 3.0
+      ANOMALY_MIN_COUNT: 5
+      SLEEP_ON_EMPTY: 0.1
+      LOG_LEVEL: INFO
+      EMAIL_ENABLED: "false"
+    networks:
+      - anomaly-net
+    restart: unless-stopped
+    command: python -m anomaly.processor
+
+  # Ingest Service - Kafka Consumer (Optional)
+  ingest:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: anomaly-ingest
+    depends_on:
+      kafka:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      KAFKA_BROKER: kafka:9092
+      KAFKA_TOPIC: events
+      KAFKA_GROUP_ID: anomaly-ingest-group
+      REDIS_URL: redis://redis:6379/0
+      BATCH_SIZE: 100
+      LOG_LEVEL: INFO
+    networks:
+      - anomaly-net
+    restart: unless-stopped
+    command: python -m anomaly.ingest
+    # Uncomment to disable ingest service if not using Kafka
+    # profiles:
+    #   - kafka
+
+networks:
+  anomaly-net:
+    driver: bridge
+
+volumes:
+  redis-data:

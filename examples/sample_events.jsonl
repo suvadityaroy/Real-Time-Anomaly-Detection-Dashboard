@@ -1,0 +1,10 @@
+{"timestamp": "2023-11-20T10:30:00", "metric": "cpu", "value": 75.5, "meta": {"host": "server-1", "region": "us-west"}}
+{"timestamp": "2023-11-20T10:30:15", "metric": "memory", "value": 82.3, "meta": {"host": "server-1", "region": "us-west"}}
+{"timestamp": "2023-11-20T10:30:30", "metric": "requests", "value": 1542.0, "meta": {"host": "server-2", "region": "us-east"}}
+{"timestamp": "2023-11-20T10:30:45", "metric": "cpu", "value": 68.2, "meta": {"host": "server-2", "region": "us-east"}}
+{"timestamp": "2023-11-20T10:31:00", "metric": "memory", "value": 91.7, "meta": {"host": "server-3", "region": "eu-west"}}
+{"timestamp": "2023-11-20T10:31:15", "metric": "cpu", "value": 95.8, "meta": {"host": "server-1", "region": "us-west"}}
+{"timestamp": "2023-11-20T10:31:30", "metric": "requests", "value": 2103.0, "meta": {"host": "server-3", "region": "eu-west"}}
+{"timestamp": "2023-11-20T10:31:45", "metric": "memory", "value": 78.4, "meta": {"host": "server-2", "region": "us-east"}}
+{"timestamp": "2023-11-20T10:32:00", "metric": "cpu", "value": 72.1, "meta": {"host": "server-3", "region": "eu-west"}}
+{"timestamp": "2023-11-20T10:32:15", "metric": "requests", "value": 1875.0, "meta": {"host": "server-1", "region": "us-west"}}
