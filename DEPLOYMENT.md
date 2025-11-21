@@ -1,62 +1,98 @@
 # Deployment Guide
 
-## Quick Deploy with Railway.app
+## ⚠️ Important: Docker Compose Required
 
-1. **Install Railway CLI**:
-   ```powershell
-   npm install -g @railway/cli
-   ```
+This system uses **6 interconnected services**:
+- API (FastAPI)
+- Ingest Service (Kafka Consumer)  
+- Processor (Anomaly Detection)
+- Redis, Kafka, Zookeeper
 
-2. **Login**:
-   ```powershell
-   railway login
-   ```
+**Railway/Vercel/Netlify don't support Docker Compose**. You need a platform that can run multiple containers.
 
-3. **Initialize Project**:
-   ```powershell
-   railway init
-   ```
+## ✅ Recommended: DigitalOcean App Platform
 
-4. **Add Services** (in Railway dashboard):
-   - Redis (built-in)
-   - Kafka (or use Upstash Kafka)
-   
-5. **Set Environment Variables**:
-   ```
-   REDIS_URL=<from Railway Redis>
-   KAFKA_BROKER=<from Kafka service>
-   KAFKA_TOPIC=events
-   ```
+**Best option** - Full Docker Compose support, $5/month:
 
-6. **Deploy**:
-   ```powershell
-   railway up
-   ```
+1. Create a DigitalOcean account
+2. Go to **App Platform**
+3. Select **Docker Compose** as source
+4. Connect your GitHub repo
+5. Click **Deploy**
 
-Your app will be live at: `https://your-app.up.railway.app`
+URL: https://cloud.digitalocean.com/apps
 
-## Alternative: Fly.io
+## Option 2: AWS Lightsail Containers
 
-```powershell
-# Install
-powershell -Command "iwr https://fly.io/install.ps1 -useb | iex"
+Deploy Docker Compose on AWS for ~$7/month:
 
-# Deploy
-fly launch
-fly deploy
+```bash
+# Install AWS CLI
+# Push containers to AWS
+aws lightsail push-container-image --service-name anomaly-detection --label api --image real-time-anomaly-detection-system-api
 ```
 
-## Alternative: Render.com
+## Option 3: Google Cloud Run (Manual Setup)
 
-1. Push code to GitHub
-2. Go to https://render.com
-3. New → Web Service
-4. Connect repo
-5. Add Redis service
-6. Deploy
+Deploy each service separately:
 
-## Notes
+1. Build and push images to Google Container Registry
+2. Create 6 Cloud Run services (api, ingest, processor, redis, kafka, zookeeper)
+3. Configure internal networking
+4. Set environment variables
 
-- Vercel doesn't support Docker/long-running services
-- Use Railway, Fly.io, or Render for this type of app
-- All support Docker and have free tiers
+**Cost**: ~$10-15/month
+
+## Option 4: Self-Hosted VPS (Cheapest)
+
+Deploy on any VPS (Hetzner, Linode, Vultr) for $5/month:
+
+```bash
+# SSH into your VPS
+ssh user@your-server-ip
+
+# Install Docker
+curl -fsSL https://get.docker.com | sh
+
+# Clone your repo
+git clone https://github.com/suvadityaroy/Real-Time-Anomaly-Detection-Dashboard.git
+cd Real-Time-Anomaly-Detection-Dashboard
+
+# Start services
+docker-compose up -d
+
+# Access at http://your-server-ip:8000
+```
+
+## Why Railway Failed
+
+Railway only deployed your **API container** without Redis/Kafka. The error shows:
+```
+ConnectionRefusedError: [Errno 111] Connection refused (localhost:6379)
+```
+
+This means the API can't find Redis because Railway doesn't run the other containers from `docker-compose.yml`.
+
+## Quick Fix for Railway (Not Recommended)
+
+To make Railway work, you'd need:
+
+1. **Create 6 separate Railway services**:
+   - Service 1: API (your current deployment)
+   - Service 2: Redis (Railway's built-in Redis)
+   - Service 3: Kafka (use Upstash Kafka - external)
+   - Service 4: Ingest (new deployment from your repo, different start command)
+   - Service 5: Processor (new deployment from your repo, different start command)
+   - Service 6: Zookeeper (use Upstash or external)
+
+2. **Set environment variables** for each service to connect them via Railway's internal network
+
+3. **Cost**: ~$5/service = **$30+/month**
+
+## Recommended Next Steps
+
+1. **Try DigitalOcean App Platform** (easiest, $5/month)
+2. **Or use a VPS** (Hetzner Cloud - €3.79/month)
+3. Delete your Railway service to avoid charges
+
+Your system works perfectly with `docker-compose up` locally. You just need a platform that supports it.

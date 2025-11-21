@@ -531,12 +531,6 @@ docker-compose exec kafka kafka-console-consumer \
 - Queue depth and backpressure
 - WebSocket connection count
 
-**TODO** (future enhancements):
-- Prometheus metrics export
-- Grafana dashboard templates
-- Distributed tracing with OpenTelemetry
-- Structured logging with JSON format
-
 ## 🔒 Security & Production Notes
 
 ### Current State (Development)
@@ -619,60 +613,6 @@ python -m anomaly.email_sender
 # Check logs for errors
 docker-compose logs processor | grep -i email
 ```
-
-## 🚧 Future Enhancements
-
-### Short-term (v1.1)
-
-- [ ] Persistent anomaly storage (TimescaleDB, InfluxDB)
-- [ ] Historical query API with time range filters
-- [ ] Dashboard improvements (charts, filters, search)
-- [ ] Slack/Teams integration for alerts
-- [ ] Configurable detectors per metric
-
-### Medium-term (v2.0)
-
-- [ ] Distributed processing with multi-node coordination
-- [ ] Advanced detectors (seasonal decomposition, IQR, MAD)
-- [ ] Auto-tuning thresholds based on baseline
-- [ ] GraphQL API for flexible queries
-- [ ] User management and RBAC
-
-### Long-term (v3.0)
-
-- [ ] Hybrid ML models (optional) for complex patterns
-- [ ] Anomaly explainability and root cause analysis
-- [ ] Multi-tenancy support
-- [ ] SaaS deployment templates (AWS, GCP, Azure)
-
-## 🤝 Contributing
-
-Contributions welcome! Please:
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Write tests for new functionality
-4. Ensure tests pass (`pytest src/tests/`)
-5. Commit with clear messages (`git commit -m 'Add amazing feature'`)
-6. Push to branch (`git push origin feature/amazing-feature`)
-7. Open a Pull Request
-
-## 📄 License
-
-MIT License - see LICENSE file for details.
-
-## 🙏 Acknowledgments
-
-- **Welford's Algorithm**: Donald Knuth, "The Art of Computer Programming"
-- **FastAPI**: Sebastián Ramírez
-- **Redis**: Salvatore Sanfilippo
-- **Kafka**: Apache Software Foundation
-
-## 📧 Support
-
-- **Issues**: https://github.com/yourusername/real-time-anomaly-detection-system/issues
-- **Discussions**: https://github.com/yourusername/real-time-anomaly-detection-system/discussions
-- **Email**: support@example.com
 
 ---
 
