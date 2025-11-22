@@ -1,4 +1,4 @@
-# 🔍 Real-Time Anomaly Detection System
+# 🔍 Real-Time Anomaly Detection Dashboard
 
 🚀 **Live Demo:** https://real-time-anomaly-detection-dashboard.up.railway.app
 
